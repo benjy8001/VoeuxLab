@@ -3,7 +3,6 @@ FROM php:8.3.8-fpm
 # Arguments defined in docker-compose.yml
 ARG user
 ARG uid
-ARG GIT_PRIV_KEY
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -34,10 +33,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Create system user to run Composer and Artisan Commands
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
-    mkdir -p /home/$user/.ssh/ && ssh-keyscan gitlab.1min30.tech >> /home/$user/.ssh/known_hosts && \
-    chmod 644 /home/$user/.ssh/known_hosts && \
-    echo "${GIT_PRIV_KEY}" > /home/$user/.ssh/id_ed25519 && \
-    chmod 600 /home/$user/.ssh/id_ed25519 && \
     chown -R $user:$user /home/$user
 
 # Install NodeJS

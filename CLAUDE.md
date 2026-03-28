@@ -1,7 +1,7 @@
 # Projet : App Cérémonie Laïque — Vœux de Mariage
 
 ## Stack
-- Laravel 12 avec Inertia.js + React + TypeScript
+- Laravel 13 avec Inertia.js + React + TypeScript
 - Tailwind CSS 4
 - MariaDB
 - Sanctum pour l'authentification (fourni par Breeze)
