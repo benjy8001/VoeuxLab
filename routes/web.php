@@ -21,10 +21,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('/couple/create', [CoupleController::class, 'create'])->name('couple.create');
-    Route::post('/couple', [CoupleController::class, 'store'])->name('couple.store');
     Route::get('/couple/join', [CoupleController::class, 'join'])->name('couple.join');
     Route::post('/couple/join', [CoupleController::class, 'attach'])->name('couple.attach');
     Route::get('/couple', [CoupleController::class, 'show'])->name('couple.show');
+    Route::post('/couple', [CoupleController::class, 'store'])->name('couple.store');
 });
 
 Route::middleware('auth')->group(function () {
