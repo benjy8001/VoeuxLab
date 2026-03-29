@@ -1,0 +1,78 @@
+<?php
+
+use App\Models\Couple;
+use App\Models\User;
+use App\Models\VowsAnswer;
+use App\Models\VowsDraft;
+use App\Support\VowsQuestions;
+
+function userWithDraft(): User
+{
+    $user = User::factory()->create();
+    $couple = Couple::factory()->create(['spouse_1_id' => $user->id]);
+    $user->update(['couple_id' => $couple->id]);
+    VowsDraft::factory()->create(['user_id' => $user->id, 'couple_id' => $couple->id]);
+    return $user;
+}
+
+test('user with couple can access vows journey', function () {
+    $user = userWithDraft();
+
+    $this->actingAs($user)
+        ->get(route('voeux.index'))
+        ->assertInertia(fn ($page) => $page
+            ->component('Voeux/Index')
+            ->has('questions', VowsQuestions::count())
+            ->has('draft.current_step')
+        );
+});
+
+test('user without couple is redirected to couple create', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->get(route('voeux.index'))
+        ->assertRedirect(route('couple.create'));
+});
+
+test('user can save a vows answer', function () {
+    $user = userWithDraft();
+
+    $this->actingAs($user)->post(route('voeux.answer'), [
+        'question_key' => 'meeting_story',
+        'answer_text' => 'Nous nous sommes rencontrés à Paris.',
+        'current_step' => 1,
+        'final' => false,
+    ]);
+
+    $draft = VowsDraft::where('user_id', $user->id)->first();
+    $this->assertDatabaseHas('vows_answers', [
+        'vows_draft_id' => $draft->id,
+        'question_key' => 'meeting_story',
+        'answer_text' => 'Nous nous sommes rencontrés à Paris.',
+    ]);
+});
+
+test('saving with final=true redirects to preview', function () {
+    $user = userWithDraft();
+
+    $this->actingAs($user)
+        ->post(route('voeux.answer'), [
+            'question_key' => 'closing_words',
+            'answer_text' => 'Je t\'aime.',
+            'current_step' => 14,
+            'final' => true,
+        ])
+        ->assertRedirect(route('voeux.preview'));
+});
+
+test('user cannot save answers for another user draft', function () {
+    $owner = userWithDraft();
+    $ownerDraft = VowsDraft::where('user_id', $owner->id)->first();
+
+    $intruder = userWithDraft();
+
+    // Intruder tries to post to their own endpoint — they get their own draft not owner's
+    // Direct policy test: intruder cannot update owner's draft
+    expect($intruder->can('update', $ownerDraft))->toBeFalse();
+});

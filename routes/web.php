@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CoupleController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VowsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,6 +26,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/couple/join', [CoupleController::class, 'attach'])->name('couple.attach');
     Route::get('/couple', [CoupleController::class, 'show'])->name('couple.show');
     Route::post('/couple', [CoupleController::class, 'store'])->name('couple.store');
+
+    Route::get('/voeux', [VowsController::class, 'index'])->name('voeux.index');
+    Route::post('/voeux/answer', [VowsController::class, 'answer'])->name('voeux.answer');
+    Route::get('/voeux/preview', [VowsController::class, 'preview'])->name('voeux.preview');
+    Route::get('/voeux/edit', [VowsController::class, 'edit'])->name('voeux.edit');
+    Route::put('/voeux', [VowsController::class, 'update'])->name('voeux.update');
 });
 
 Route::middleware('auth')->group(function () {
