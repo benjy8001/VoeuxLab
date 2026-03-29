@@ -67,7 +67,7 @@ class VowsController extends Controller
 
         $draft = VowsDraft::where('user_id', $request->user()->id)
             ->where('couple_id', $request->user()->couple_id)
-            ->with('answers')
+            ->with(['answers', 'couple.spouse1', 'couple.spouse2'])
             ->firstOrFail();
 
         Gate::authorize('view', $draft);
@@ -77,8 +77,14 @@ class VowsController extends Controller
             $draft->update(['generated_text' => $text]);
         }
 
+        $couple      = $draft->couple;
+        $partnerName = $couple->spouse_1_id === $request->user()->id
+            ? $couple->spouse2?->name
+            : $couple->spouse1->name;
+
         return Inertia::render('Voeux/Preview', [
-            'draft' => $draft->only(['id', 'status', 'generated_text']),
+            'draft'        => $draft->only(['id', 'status', 'generated_text']),
+            'partner_name' => $partnerName,
         ]);
     }
 
