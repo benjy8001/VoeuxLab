@@ -12,7 +12,7 @@ class VowsDraft extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'couple_id', 'status', 'current_step', 'generated_text',
+        'user_id', 'couple_id', 'status', 'tone', 'current_step', 'generated_text',
     ];
 
     public function user(): BelongsTo

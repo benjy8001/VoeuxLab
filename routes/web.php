@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/couple', [CoupleController::class, 'store'])->name('couple.store');
 
     Route::get('/voeux/export', [ExportController::class, 'vows'])->name('voeux.export');
+    Route::post('/voeux/tone', [VowsController::class, 'setTone'])->name('voeux.tone');
     Route::get('/voeux', [VowsController::class, 'index'])->name('voeux.index');
     Route::post('/voeux/answer', [VowsController::class, 'answer'])->name('voeux.answer');
     Route::get('/voeux/preview', [VowsController::class, 'preview'])->name('voeux.preview');

@@ -9,6 +9,7 @@ use App\Services\VowsGeneratorService;
 use App\Support\VowsQuestions;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -29,8 +30,8 @@ class VowsController extends Controller
         Gate::authorize('view', $draft);
 
         return Inertia::render('Voeux/Index', [
-            'draft'     => $draft->only(['id', 'current_step', 'status']),
-            'questions' => VowsQuestions::all(),
+            'draft'     => $draft->only(['id', 'current_step', 'status', 'tone']),
+            'questions' => VowsQuestions::forTone($draft->tone ?? 'balanced'),
             'answers'   => $draft->answers->pluck('answer_text', 'question_key'),
         ]);
     }
@@ -113,5 +114,26 @@ class VowsController extends Controller
         $draft->update(['generated_text' => $request->generated_text]);
 
         return redirect()->route('voeux.preview');
+    }
+
+    public function setTone(Request $request): RedirectResponse
+    {
+        if ($request->user()->couple_id === null) {
+            return redirect()->route('couple.create');
+        }
+
+        $request->validate([
+            'tone' => ['required', 'string', Rule::in(VowsQuestions::validTones())],
+        ]);
+
+        $draft = VowsDraft::where('user_id', $request->user()->id)
+            ->where('couple_id', $request->user()->couple_id)
+            ->firstOrFail();
+
+        Gate::authorize('update', $draft);
+
+        $draft->update(['tone' => $request->tone]);
+
+        return redirect()->route('voeux.index');
     }
 }

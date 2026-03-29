@@ -3,6 +3,7 @@ import { router } from '@inertiajs/react';
 import debounce from 'lodash/debounce';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import ProgressBar from '@/Components/ProgressBar';
+import ToneSelector from '@/Components/ToneSelector';
 
 interface Question {
     key: string;
@@ -13,7 +14,7 @@ interface Question {
 }
 
 interface Props {
-    draft: { id: number; current_step: number; status: string };
+    draft: { id: number; current_step: number; status: string; tone: string };
     questions: Question[];
     answers: Record<string, string>;
 }
@@ -68,6 +69,16 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
             final: true,
         });
     };
+
+    const hasNoAnswers = Object.keys(initialAnswers).length === 0;
+
+    if (draft.current_step === 1 && hasNoAnswers) {
+        return (
+            <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Mes vœux</h2>}>
+                <ToneSelector />
+            </AuthenticatedLayout>
+        );
+    }
 
     return (
         <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Mes vœux</h2>}>
