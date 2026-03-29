@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('couples', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('spouse_1_id');
-            $table->unsignedBigInteger('spouse_2_id')->nullable();
-            $table->unsignedBigInteger('officiant_id')->nullable();
+            $table->foreignId('spouse_1_id')->constrained('users');
+            $table->foreignId('spouse_2_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('officiant_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('invitation_code', 8)->unique();
             $table->date('ceremony_date')->nullable();
             $table->string('ceremony_location')->nullable();
@@ -28,6 +28,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('couples', function (Blueprint $table) {
+            $table->dropForeign(['spouse_1_id']);
+            $table->dropForeign(['spouse_2_id']);
+            $table->dropForeign(['officiant_id']);
+        });
         Schema::dropIfExists('couples');
     }
 };
