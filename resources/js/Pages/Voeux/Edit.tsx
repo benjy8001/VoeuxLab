@@ -1,5 +1,6 @@
 import { useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import CitationBank from '@/Components/CitationBank';
 
 interface Props {
     draft: { id: number; generated_text: string };
@@ -43,6 +44,7 @@ export default function VoeuxEdit({ draft }: Props) {
                     </a>
                 </div>
             </div>
+            <CitationBank onInsert={(text) => setData('generated_text', data.generated_text + '\n\n' + text)} />
         </AuthenticatedLayout>
     );
 }

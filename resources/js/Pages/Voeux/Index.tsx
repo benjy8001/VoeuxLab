@@ -4,6 +4,7 @@ import debounce from 'lodash/debounce';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import ProgressBar from '@/Components/ProgressBar';
 import ToneSelector from '@/Components/ToneSelector';
+import CitationBank from '@/Components/CitationBank';
 
 interface Question {
     key: string;
@@ -58,6 +59,13 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
                 onError: () => setStep(previousStep), // annulation si erreur
             }
         );
+    };
+
+    const handleCitationInsert = (text: string) => {
+        const current = localAnswers[question.key] ?? '';
+        const newValue = current ? `${current}\n\n${text}` : text;
+        setLocalAnswers((prev) => ({ ...prev, [question.key]: newValue }));
+        autoSave(question.key, newValue, step);
     };
 
     const handleFinish = () => {
@@ -127,6 +135,7 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
                     )}
                 </div>
             </div>
+            <CitationBank onInsert={handleCitationInsert} />
         </AuthenticatedLayout>
     );
 }
