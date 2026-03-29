@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CoupleController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VowsController;
@@ -18,9 +19,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/couple/create', [CoupleController::class, 'create'])->name('couple.create');
     Route::get('/couple/join', [CoupleController::class, 'join'])->name('couple.join');
