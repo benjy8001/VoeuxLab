@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CoupleController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VowsController;
 use Illuminate\Foundation\Application;
@@ -27,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/couple', [CoupleController::class, 'show'])->name('couple.show');
     Route::post('/couple', [CoupleController::class, 'store'])->name('couple.store');
 
+    Route::get('/voeux/export', [ExportController::class, 'vows'])->name('voeux.export');
     Route::get('/voeux', [VowsController::class, 'index'])->name('voeux.index');
     Route::post('/voeux/answer', [VowsController::class, 'answer'])->name('voeux.answer');
     Route::get('/voeux/preview', [VowsController::class, 'preview'])->name('voeux.preview');
