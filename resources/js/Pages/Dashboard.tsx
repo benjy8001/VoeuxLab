@@ -114,6 +114,12 @@ export default function Dashboard({ couple, vows_progress }: Props) {
                         )}
                     </div>
                 )}
+                {/* Lien mode officiant·e */}
+                <div className="text-center pt-4 border-t border-stone-100">
+                    <Link href={route('officiant.create')} className="text-xs text-stone-400 hover:text-amber-600 transition-colors">
+                        Vous officiez la cérémonie ? →
+                    </Link>
+                </div>
             </div>
         </AuthenticatedLayout>
     );

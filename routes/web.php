@@ -3,6 +3,7 @@
 use App\Http\Controllers\CoupleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\OfficiantController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VowsController;
 use Illuminate\Foundation\Application;
@@ -26,6 +27,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/couple/join', [CoupleController::class, 'attach'])->name('couple.attach');
     Route::get('/couple', [CoupleController::class, 'show'])->name('couple.show');
     Route::post('/couple', [CoupleController::class, 'store'])->name('couple.store');
+
+    Route::get('/officiant/join', [OfficiantController::class, 'create'])->name('officiant.create');
+    Route::post('/officiant/join', [OfficiantController::class, 'store'])->name('officiant.store');
+    Route::get('/officiant', [OfficiantController::class, 'index'])->name('officiant.index');
+    Route::post('/officiant/answer', [OfficiantController::class, 'answer'])->name('officiant.answer');
+    Route::get('/officiant/preview', [OfficiantController::class, 'preview'])->name('officiant.preview');
 
     Route::get('/voeux/export', [ExportController::class, 'vows'])->name('voeux.export');
     Route::post('/voeux/tone', [VowsController::class, 'setTone'])->name('voeux.tone');
