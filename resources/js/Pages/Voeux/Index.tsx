@@ -42,6 +42,8 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
 
     const saveAndGoTo = (newStep: number) => {
         autoSave.flush();
+        const previousStep = step;
+        setStep(newStep); // mise à jour optimiste
         router.post(
             route('voeux.answer'),
             {
@@ -52,7 +54,7 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
             },
             {
                 preserveState: false,
-                onSuccess: () => setStep(newStep),
+                onError: () => setStep(previousStep), // annulation si erreur
             }
         );
     };

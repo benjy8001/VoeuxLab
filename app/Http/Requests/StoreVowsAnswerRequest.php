@@ -10,7 +10,10 @@ class StoreVowsAnswerRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->couple_id !== null;
+        return $this->user()->couple_id !== null
+            && \App\Models\VowsDraft::where('user_id', $this->user()->id)
+                ->where('couple_id', $this->user()->couple_id)
+                ->exists();
     }
 
     public function rules(): array
