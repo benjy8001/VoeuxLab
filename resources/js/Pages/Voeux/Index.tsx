@@ -15,7 +15,7 @@ interface Question {
 }
 
 interface Props {
-    draft: { id: number; current_step: number; status: string; tone: string };
+    draft: { id: number; current_step: number; status: string; tone: string | null };
     questions: Question[];
     answers: Record<string, string>;
 }
@@ -80,7 +80,7 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
 
     const hasNoAnswers = Object.keys(initialAnswers).length === 0;
 
-    if (draft.current_step === 1 && hasNoAnswers) {
+    if (!draft.tone) {
         return (
             <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Mes vœux</h2>}>
                 <ToneSelector />
