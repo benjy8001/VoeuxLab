@@ -1,58 +1,134 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Vœux de Cérémonie
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Application web pour aider les mariés et les officiant·e·s à rédiger leurs vœux et discours de cérémonie laïque.
 
-## About Laravel
+**Demo :** [voeuxlab.benjamin-mabille.net](https://voeuxlab.benjamin-mabille.net)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fonctionnalités
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Parcours guidé en 14 questions** pour rédiger ses vœux personnalisés
+- **4 tonalités** au choix : émouvant, équilibré, léger, poétique
+- **Génération automatique** des vœux depuis les réponses (côté serveur)
+- **Éditeur libre** pour affiner le brouillon généré (drag-and-drop des blocs)
+- **Minuteur de lecture** et conseils de relecture sur l'aperçu
+- **Banque de citations** (poésie, humour, cinéma, chanson) pour s'inspirer
+- **Mode officiant·e** — parcours 8 questions pour le discours de cérémonie
+- **Export PDF** des vœux finalisés
+- **Couple partagé** — chaque époux rédige séparément, les vœux restent privés
+- Sauvegarde automatique (debounce 2 s)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Stack
 
-## Learning Laravel
+- **Backend :** Laravel 13 · PHP 8.3
+- **Frontend :** Inertia.js · React · TypeScript · Tailwind CSS 4
+- **Base de données :** MariaDB
+- **Auth :** Laravel Breeze / Sanctum
+- **Infra locale :** Docker (PHP-FPM · Nginx · MariaDB · Redis)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Installation locale
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Prérequis
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- Docker & Docker Compose
+- Make
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Première installation
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <repo>
+cd wedding
+make start
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Cette commande :
+1. Copie `.env.example` → `.env`
+2. Build les images Docker
+3. Installe les dépendances Composer et npm
+4. Génère la clé applicative
+5. Lance les migrations et les seeders
 
-## Contributing
+L'application est ensuite disponible sur **http://localhost**.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Commandes utiles
 
-## Code of Conduct
+```bash
+make run          # Démarrer les conteneurs
+make stop         # Arrêter les conteneurs
+make assets-watch # Mode watch (Vite)
+make tests        # Lancer les tests Pest
+make tinker       # Laravel Tinker
+make connect      # Shell dans le conteneur PHP
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Déploiement (production)
 
-## Security Vulnerabilities
+Le déploiement se fait par rsync vers un hébergement mutualisé (Hostinger).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Configuration
 
-## License
+Copier `.env.make.example` en `.env.make` et renseigner les variables :
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+cp .env.make.example .env.make
+```
+
+```dotenv
+DEPLOY_USER=your_ssh_user
+DEPLOY_HOST=your.domain.com
+DEPLOY_PORT=65002
+DEPLOY_PATH=/home/your_user/domains/your.domain.com/public_html/wedding
+```
+
+Créer également un `.env.production` sur le serveur (voir `.env.production` à la racine du projet comme modèle).
+
+### Lancer un déploiement
+
+```bash
+make deploy
+```
+
+Les étapes exécutées :
+
+| Étape | Description |
+|---|---|
+| `deploy-assets` | Compile les assets pour la production (`npm run build`) |
+| `deploy-sync` | Rsync vers le serveur (exclut `.git`, `node_modules`, `vendor`, `.env`, logs…) |
+| `deploy-env` | Copie `.env.production` → `.env` sur le serveur |
+| `deploy-composer` | `composer install --no-dev --optimize-autoloader` sur le serveur |
+| `deploy-artisan` | `migrate --force`, `storage:link`, `optimize` sur le serveur |
+
+```bash
+make deploy-ssh   # Ouvrir une session SSH sur le serveur
+```
+
+## Architecture
+
+```
+app/
+├── Http/Controllers/
+│   ├── VowsController.php        # Parcours vœux
+│   ├── OfficiantController.php   # Parcours officiant·e
+│   ├── ExportController.php      # Export PDF
+│   └── CoupleController.php      # Gestion du couple
+├── Models/
+│   ├── User, Couple, VowsDraft, VowsAnswer, Ceremony
+└── Services/
+    └── VowsGeneratorService.php  # Génération des vœux côté serveur
+
+resources/js/Pages/
+├── Vows/     # Parcours et éditeur de vœux
+├── Officiant/ # Parcours officiant·e
+└── Welcome.tsx
+```
+
+## Tests
+
+```bash
+make tests
+```
+
+Tests écrits avec **Pest PHP**.
+
+## Licence
+
+Projet personnel — tous droits réservés.
