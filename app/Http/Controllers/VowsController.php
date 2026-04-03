@@ -145,6 +145,10 @@ class VowsController extends Controller
 
     public function regenerate(Request $request): RedirectResponse
     {
+        if ($request->user()->couple_id === null) {
+            return redirect()->route('couple.create');
+        }
+
         $draft = VowsDraft::where('user_id', $request->user()->id)
             ->where('couple_id', $request->user()->couple_id)
             ->firstOrFail();

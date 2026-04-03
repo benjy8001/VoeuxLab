@@ -30,9 +30,19 @@ test('user peut régénérer ses vœux et generated_text est effacé', function 
 });
 
 test('user sans draft reçoit un 404', function () {
+    $user = User::factory()->create();
+    $couple = Couple::factory()->create(['spouse_1_id' => $user->id]);
+    $user->update(['couple_id' => $couple->id]);
+
+    $this->actingAs($user)
+        ->post(route('voeux.regenerate'))
+        ->assertStatus(404);
+});
+
+test('user sans couple est redirigé vers couple.create', function () {
     $intruder = User::factory()->create();
 
     $this->actingAs($intruder)
         ->post(route('voeux.regenerate'))
-        ->assertStatus(404);
+        ->assertRedirect(route('couple.create'));
 });
