@@ -1,23 +1,31 @@
-import { Head } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
-// Page affichant les vœux du partenaire (sera complétée en Task 8)
-export default function Partner({
-    generated_text,
-    partner_name,
-}: {
+interface Props {
     generated_text: string;
     partner_name: string;
-}) {
+}
+
+export default function VoeuxPartner({ generated_text, partner_name }: Props) {
     return (
-        <AuthenticatedLayout>
-            <Head title={`Vœux de ${partner_name}`} />
-            <div className="py-12">
-                <div className="mx-auto max-w-3xl px-4">
-                    <h1 className="mb-6 text-2xl font-bold">Vœux de {partner_name}</h1>
-                    <div className="whitespace-pre-wrap rounded-lg bg-white p-6 shadow">
-                        {generated_text}
-                    </div>
+        <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Vœux de {partner_name}</h2>}>
+            <div className="max-w-2xl mx-auto px-4 py-8">
+                <h1 className="text-3xl font-serif text-stone-800 mb-2">
+                    Vœux de {partner_name}
+                </h1>
+                <p className="text-sm text-stone-400 italic mb-8">Lecture seule</p>
+
+                <div className="bg-stone-50 border border-stone-100 rounded-xl p-6 whitespace-pre-wrap text-stone-700 leading-relaxed font-serif">
+                    {generated_text}
+                </div>
+
+                <div className="mt-8">
+                    <Link
+                        href={route('voeux.preview')}
+                        className="px-6 py-2 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-50 transition-colors"
+                    >
+                        ← Retour à mes vœux
+                    </Link>
                 </div>
             </div>
         </AuthenticatedLayout>
