@@ -91,5 +91,6 @@ test('GET /voeux/partner retourne le texte du partenaire si les deux ont partagÃ
         ->assertInertia(fn ($page) => $page
             ->component('Voeux/Partner')
             ->where('generated_text', 'vÅ“ux du partenaire')
+            ->where('partner_name', $spouse2->name)
         );
 });

@@ -204,8 +204,8 @@ class VowsController extends Controller
         Gate::authorize('viewPartner', $partnerDraft);
 
         $partnerName = $partnerId === $couple->spouse_1_id
-            ? $couple->spouse1->name
-            : $couple->spouse2->name;
+            ? $couple->spouse1?->name
+            : $couple->spouse2?->name;
 
         return Inertia::render('Voeux/Partner', [
             'generated_text' => $partnerDraft->generated_text,
