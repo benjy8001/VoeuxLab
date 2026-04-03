@@ -8,9 +8,12 @@ import DraggableBlocks from '@/Components/DraggableBlocks';
 interface Props {
     draft: { id: number; status: string; generated_text: string };
     partner_name: string | null;
+    has_shared: boolean;
+    partner_has_shared: boolean;
+    partner_vows_readable: boolean;
 }
 
-export default function VoeuxPreview({ draft, partner_name }: Props) {
+export default function VoeuxPreview({ draft, partner_name, has_shared, partner_has_shared, partner_vows_readable }: Props) {
     const [text, setText] = useState(draft.generated_text ?? '');
 
     const handleReorder = (newText: string) => {
@@ -43,6 +46,49 @@ export default function VoeuxPreview({ draft, partner_name }: Props) {
 
                 <ReadingTimer text={text} />
                 <VowsInsights text={text} partnerName={partner_name} />
+
+                {/* Bloc partage */}
+                <div className="mt-8 border border-stone-200 rounded-xl p-5 bg-stone-50">
+                    <h3 className="text-sm font-semibold text-stone-600 mb-3">Partage des vœux</h3>
+
+                    {partner_vows_readable ? (
+                        <div className="space-y-2">
+                            <p className="text-sm text-green-700">Les vœux de votre partenaire sont disponibles.</p>
+                            {partner_name && (
+                                <Link
+                                    href={route('voeux.partner')}
+                                    className="inline-block px-4 py-2 bg-amber-600 text-white text-sm rounded-lg hover:bg-amber-700 transition-colors"
+                                >
+                                    Lire les vœux de {partner_name}
+                                </Link>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="space-y-2">
+                            {!has_shared ? (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (window.confirm('Partager vos vœux permettra à votre partenaire de les lire dès qu\'il·elle aura également partagé les siens. Continuer ?')) {
+                                            router.post(route('voeux.share'));
+                                        }
+                                    }}
+                                    className="px-4 py-2 bg-amber-600 text-white text-sm rounded-lg hover:bg-amber-700 transition-colors"
+                                >
+                                    Partager mes vœux
+                                </button>
+                            ) : (
+                                <p className="text-sm text-amber-700">✓ Vous avez partagé vos vœux.</p>
+                            )}
+                            <p className="text-xs text-stone-400">
+                                {partner_has_shared
+                                    ? `${partner_name ?? 'Votre partenaire'} a déjà partagé ses vœux.`
+                                    : `En attente du partage de ${partner_name ?? 'votre partenaire'}.`
+                                }
+                            </p>
+                        </div>
+                    )}
+                </div>
 
                 <div className="flex flex-wrap gap-4 mt-8">
                     <Link
