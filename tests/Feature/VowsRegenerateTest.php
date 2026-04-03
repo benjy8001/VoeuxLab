@@ -17,7 +17,7 @@ function userWithCompleteDraft(): User
     return $user;
 }
 
-test('user can regenerate their vows and generated_text is cleared', function () {
+test('user peut régénérer ses vœux et generated_text est effacé', function () {
     $user = userWithCompleteDraft();
     $draft = VowsDraft::where('user_id', $user->id)->first();
     $draft->update(['generated_text' => 'texte existant']);
@@ -29,7 +29,7 @@ test('user can regenerate their vows and generated_text is cleared', function ()
     expect($draft->fresh()->generated_text)->toBeNull();
 });
 
-test('user cannot regenerate another user draft', function () {
+test('user ne peut pas régénérer le draft d\'un autre', function () {
     $owner = userWithCompleteDraft();
 
     $intruder = User::factory()->create();
