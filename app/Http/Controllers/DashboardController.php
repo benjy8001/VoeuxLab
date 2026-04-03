@@ -18,6 +18,15 @@ class DashboardController extends Controller
             ? VowsDraft::where('user_id', $user->id)->where('couple_id', $couple->id)->first()
             : null;
 
+        $partnerVowsReadable = false;
+        $partnerName = null;
+        if ($couple && $draft) {
+            $partnerVowsReadable = $draft->isReadableByPartner($couple);
+            $partnerName = $couple->spouse_1_id === $user->id
+                ? $couple->spouse2?->name
+                : $couple->spouse1->name;
+        }
+
         return Inertia::render('Dashboard', [
             'couple' => $couple ? [
                 'invitation_code'   => $couple->invitation_code,
@@ -32,6 +41,8 @@ class DashboardController extends Controller
                 'total_steps'  => VowsQuestions::count(),
                 'status'       => $draft->status,
             ] : null,
+            'partner_vows_readable' => $partnerVowsReadable,
+            'partner_name'          => $partnerName,
         ]);
     }
 }

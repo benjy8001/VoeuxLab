@@ -82,9 +82,25 @@ class VowsController extends Controller
             ? $couple->spouse2?->name
             : $couple->spouse1->name;
 
+        $hasShared = $draft->shared_at !== null;
+        $partnerHasShared = false;
+
+        if ($couple->isFull()) {
+            $partnerId = $couple->spouse_1_id === $request->user()->id
+                ? $couple->spouse_2_id
+                : $couple->spouse_1_id;
+            $partnerDraft = VowsDraft::where('user_id', $partnerId)
+                ->where('couple_id', $couple->id)
+                ->first();
+            $partnerHasShared = $partnerDraft?->shared_at !== null;
+        }
+
         return Inertia::render('Voeux/Preview', [
-            'draft'        => $draft->only(['id', 'status', 'generated_text']),
-            'partner_name' => $partnerName,
+            'draft'                  => $draft->only(['id', 'status', 'generated_text']),
+            'partner_name'           => $partnerName,
+            'has_shared'             => $hasShared,
+            'partner_has_shared'     => $partnerHasShared,
+            'partner_vows_readable'  => $draft->isReadableByPartner($couple),
         ]);
     }
 
