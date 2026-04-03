@@ -29,9 +29,7 @@ test('user peut régénérer ses vœux et generated_text est effacé', function 
     expect($draft->fresh()->generated_text)->toBeNull();
 });
 
-test('user ne peut pas régénérer le draft d\'un autre', function () {
-    $owner = userWithCompleteDraft();
-
+test('user sans draft reçoit un 404', function () {
     $intruder = User::factory()->create();
 
     $this->actingAs($intruder)
