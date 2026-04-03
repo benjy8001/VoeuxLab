@@ -31,12 +31,6 @@ test('user can regenerate their vows and generated_text is cleared', function ()
 
 test('user cannot regenerate another user draft', function () {
     $owner = userWithCompleteDraft();
-    $couple = Couple::factory()->create(['spouse_1_id' => $owner->id]);
-    VowsDraft::factory()->create([
-        'user_id'   => $owner->id,
-        'couple_id' => $couple->id,
-        'status'    => 'completed',
-    ]);
 
     $intruder = User::factory()->create();
 
