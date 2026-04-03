@@ -57,6 +57,16 @@ export default function VoeuxPreview({ draft, partner_name }: Props) {
                     >
                         Revoir mes réponses
                     </Link>
+                    <button
+                        onClick={() => {
+                            if (window.confirm('Cette action remplacera le texte actuel par une nouvelle génération depuis vos réponses. Continuer ?')) {
+                                router.post(route('voeux.regenerate'));
+                            }
+                        }}
+                        className="px-6 py-2 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-50 transition-colors"
+                    >
+                        Régénérer depuis mes réponses
+                    </button>
                     <a
                         href={route('voeux.export')}
                         className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
