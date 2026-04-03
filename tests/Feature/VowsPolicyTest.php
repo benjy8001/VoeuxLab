@@ -102,3 +102,26 @@ test('un tiers ne peut jamais accéder aux vœux du partenaire', function () {
 
     expect($intruder->can('viewPartner', $partnerDraft))->toBeFalse();
 });
+
+test('un époux peut consulter les vœux du partenaire si la cérémonie est passée', function () {
+    $spouse1 = User::factory()->create();
+    $spouse2 = User::factory()->create();
+    $couple = Couple::factory()->create([
+        'spouse_1_id'   => $spouse1->id,
+        'spouse_2_id'   => $spouse2->id,
+        'ceremony_date' => \Illuminate\Support\Carbon::yesterday(),
+    ]);
+    $spouse1->update(['couple_id' => $couple->id]);
+    VowsDraft::factory()->create([
+        'user_id'   => $spouse1->id,
+        'couple_id' => $couple->id,
+        'shared_at' => null,
+    ]);
+    $partnerDraft = VowsDraft::factory()->create([
+        'user_id'   => $spouse2->id,
+        'couple_id' => $couple->id,
+        'shared_at' => null,
+    ]);
+
+    expect($spouse1->can('viewPartner', $partnerDraft))->toBeTrue();
+});
