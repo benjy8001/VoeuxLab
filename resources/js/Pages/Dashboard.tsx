@@ -20,9 +20,11 @@ interface VowsProgressData {
 interface Props {
     couple: CoupleData | null;
     vows_progress: VowsProgressData | null;
+    partner_vows_readable: boolean;
+    partner_name: string | null;
 }
 
-export default function Dashboard({ couple, vows_progress }: Props) {
+export default function Dashboard({ couple, vows_progress, partner_vows_readable, partner_name }: Props) {
     return (
         <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Tableau de bord</h2>}>
             <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
@@ -90,6 +92,14 @@ export default function Dashboard({ couple, vows_progress }: Props) {
                                     >
                                         Voir mes vœux
                                     </Link>
+                                    {partner_vows_readable && partner_name && (
+                                        <Link
+                                            href={route('voeux.partner')}
+                                            className="px-4 py-2 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-50 text-sm"
+                                        >
+                                            Lire les vœux de {partner_name}
+                                        </Link>
+                                    )}
                                     <a
                                         href={route('voeux.export')}
                                         className="px-4 py-2 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-50 text-sm"
