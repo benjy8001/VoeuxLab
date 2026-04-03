@@ -16,7 +16,7 @@ export default function VoeuxPartner({ generated_text, partner_name }: Props) {
                 <p className="text-sm text-stone-400 italic mb-8">Lecture seule</p>
 
                 <div className="bg-stone-50 border border-stone-100 rounded-xl p-6 whitespace-pre-wrap text-stone-700 leading-relaxed font-serif">
-                    {generated_text}
+                    {generated_text || <span className="text-stone-400 italic">Aucun texte disponible.</span>}
                 </div>
 
                 <div className="mt-8">

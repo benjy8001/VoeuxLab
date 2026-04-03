@@ -24,7 +24,7 @@ class DashboardController extends Controller
             $partnerVowsReadable = $draft->isReadableByPartner($couple);
             $partnerName = $couple->spouse_1_id === $user->id
                 ? $couple->spouse2?->name
-                : $couple->spouse1->name;
+                : $couple->spouse1?->name;
         }
 
         return Inertia::render('Dashboard', [

@@ -100,6 +100,8 @@ class VowsController extends Controller
             'partner_name'           => $partnerName,
             'has_shared'             => $hasShared,
             'partner_has_shared'     => $partnerHasShared,
+            // La condition est symétrique : si je peux lire les vœux du partenaire,
+            // le partenaire peut aussi lire les miens.
             'partner_vows_readable'  => $draft->isReadableByPartner($couple),
         ]);
     }
