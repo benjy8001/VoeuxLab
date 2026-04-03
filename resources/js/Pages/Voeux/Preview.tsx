@@ -58,6 +58,7 @@ export default function VoeuxPreview({ draft, partner_name }: Props) {
                         Revoir mes réponses
                     </Link>
                     <button
+                        type="button"
                         onClick={() => {
                             if (window.confirm('Cette action remplacera le texte actuel par une nouvelle génération depuis vos réponses. Continuer ?')) {
                                 router.post(route('voeux.regenerate'));
