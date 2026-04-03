@@ -159,4 +159,57 @@ class VowsController extends Controller
 
         return redirect()->route('voeux.preview');
     }
+
+    public function share(Request $request): RedirectResponse
+    {
+        if ($request->user()->couple_id === null) {
+            return redirect()->route('couple.create');
+        }
+
+        $draft = VowsDraft::where('user_id', $request->user()->id)
+            ->where('couple_id', $request->user()->couple_id)
+            ->firstOrFail();
+
+        Gate::authorize('update', $draft);
+
+        // Marque les vœux comme partagés (idempotent)
+        if (!$draft->shared_at) {
+            $draft->update(['shared_at' => now()]);
+        }
+
+        return redirect()->route('voeux.preview');
+    }
+
+    public function partner(Request $request): Response|RedirectResponse
+    {
+        if ($request->user()->couple_id === null) {
+            return redirect()->route('couple.create');
+        }
+
+        $couple = $request->user()->couple->load(['spouse1', 'spouse2']);
+
+        // Détermine l'identifiant du partenaire
+        $partnerId = $couple->spouse_1_id === $request->user()->id
+            ? $couple->spouse_2_id
+            : $couple->spouse_1_id;
+
+        if (!$partnerId) {
+            return redirect()->route('voeux.preview');
+        }
+
+        $partnerDraft = VowsDraft::where('user_id', $partnerId)
+            ->where('couple_id', $couple->id)
+            ->firstOrFail();
+
+        Gate::authorize('viewPartner', $partnerDraft);
+
+        $partnerName = $partnerId === $couple->spouse_1_id
+            ? $couple->spouse1->name
+            : $couple->spouse2->name;
+
+        return Inertia::render('Voeux/Partner', [
+            'generated_text' => $partnerDraft->generated_text,
+            'partner_name'   => $partnerName,
+        ]);
+    }
 }

@@ -37,6 +37,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/voeux/export', [ExportController::class, 'vows'])->name('voeux.export');
     Route::post('/voeux/tone', [VowsController::class, 'setTone'])->name('voeux.tone');
     Route::post('/voeux/regenerate', [VowsController::class, 'regenerate'])->name('voeux.regenerate');
+    Route::post('/voeux/share', [VowsController::class, 'share'])->name('voeux.share');
+    Route::get('/voeux/partner', [VowsController::class, 'partner'])->name('voeux.partner');
     Route::get('/voeux', [VowsController::class, 'index'])->name('voeux.index');
     Route::post('/voeux/answer', [VowsController::class, 'answer'])->name('voeux.answer');
     Route::get('/voeux/preview', [VowsController::class, 'preview'])->name('voeux.preview');
