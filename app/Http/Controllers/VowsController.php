@@ -142,4 +142,17 @@ class VowsController extends Controller
 
         return redirect()->route('voeux.index');
     }
+
+    public function regenerate(Request $request): RedirectResponse
+    {
+        $draft = VowsDraft::where('user_id', $request->user()->id)
+            ->where('couple_id', $request->user()->couple_id)
+            ->firstOrFail();
+
+        Gate::authorize('update', $draft);
+
+        $draft->update(['generated_text' => null]);
+
+        return redirect()->route('voeux.preview');
+    }
 }
