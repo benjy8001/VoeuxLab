@@ -331,7 +331,7 @@ function SpouseView({ ceremony }: { ceremony: CeremonyProps }) {
 
         setBlocks(newBlocks);
         // Envoyer le nouvel ordre au serveur
-        router.put(route('ceremony.blocks.update'), { blocks: newBlocks });
+        router.put(route('ceremony.blocks.update'), { blocks: newBlocks } as unknown as Parameters<typeof router.put>[1]);
     };
 
     const handleDelete = (blockId: string) => {
