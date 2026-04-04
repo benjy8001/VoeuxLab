@@ -99,8 +99,6 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
         });
     };
 
-    const hasNoAnswers = Object.keys(initialAnswers).length === 0;
-
     if (!draft.tone) {
         return (
             <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Mes vœux</h2>}>
