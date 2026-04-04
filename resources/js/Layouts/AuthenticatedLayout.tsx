@@ -34,6 +34,13 @@ export default function Authenticated({
                                 >
                                     Dashboard
                                 </NavLink>
+                                {/* Lien Cérémonie */}
+                                <NavLink
+                                    href={route('ceremony.show')}
+                                    active={route().current('ceremony.*')}
+                                >
+                                    Cérémonie
+                                </NavLink>
                                 {/* Lien admin — visible uniquement pour les administrateurs */}
                                 {user?.role === 'admin' && (
                                     <NavLink
@@ -146,6 +153,13 @@ export default function Authenticated({
                             active={route().current('dashboard')}
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                        {/* Lien Cérémonie mobile */}
+                        <ResponsiveNavLink
+                            href={route('ceremony.show')}
+                            active={route().current('ceremony.*')}
+                        >
+                            Cérémonie
                         </ResponsiveNavLink>
                         {/* Lien admin mobile — visible uniquement pour les administrateurs */}
                         {user?.role === 'admin' && (
