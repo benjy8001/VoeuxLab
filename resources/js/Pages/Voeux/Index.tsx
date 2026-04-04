@@ -2,9 +2,10 @@ import { useState, useCallback } from 'react';
 import { router } from '@inertiajs/react';
 import debounce from 'lodash/debounce';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import ProgressBar from '@/Components/ProgressBar';
+import StepperBar from '@/Components/StepperBar';
 import ToneSelector from '@/Components/ToneSelector';
 import CitationBank from '@/Components/CitationBank';
+import SuggestionsPanel from '@/Components/SuggestionsPanel';
 
 interface Question {
     key: string;
@@ -31,7 +32,11 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
             router.post(
                 route('voeux.answer'),
                 { question_key: key, answer_text: text, current_step: currentStep, final: false },
-                { preserveState: true, preserveScroll: true, replace: true }
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true,
+                }
             );
         }, 2000),
         []
@@ -61,6 +66,20 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
         );
     };
 
+    const navigateTo = (targetStep: number) => {
+        autoSave.cancel();
+        router.post(
+            route('voeux.answer'),
+            {
+                question_key: question.key,
+                answer_text: localAnswers[question.key] ?? '',
+                current_step: targetStep,
+                final: false,
+            },
+            { preserveState: false }
+        );
+    };
+
     const handleCitationInsert = (text: string) => {
         const current = localAnswers[question.key] ?? '';
         const newValue = current ? `${current}\n\n${text}` : text;
@@ -78,8 +97,6 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
         });
     };
 
-    const hasNoAnswers = Object.keys(initialAnswers).length === 0;
-
     if (!draft.tone) {
         return (
             <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Mes vœux</h2>}>
@@ -91,7 +108,12 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
     return (
         <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Mes vœux</h2>}>
             <div className="max-w-2xl mx-auto px-4 py-8">
-                <ProgressBar current={step} total={total} />
+                <StepperBar
+                    questions={questions}
+                    currentStep={step}
+                    answers={localAnswers}
+                    onNavigate={navigateTo}
+                />
 
                 <h2 className="text-2xl font-serif text-stone-800 mt-8 mb-6">
                     {question.label}
@@ -104,6 +126,14 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
                     rows={8}
                     className="w-full p-4 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none resize-none text-stone-700"
                 />
+
+                <div className="mt-3">
+                    <SuggestionsPanel
+                        questionKey={question.key}
+                        tone={draft.tone ?? 'balanced'}
+                        onInsert={handleCitationInsert}
+                    />
+                </div>
 
                 {question.hint && (
                     <p className="text-sm text-stone-400 mt-2 italic">{question.hint}</p>
