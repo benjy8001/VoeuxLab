@@ -44,3 +44,20 @@ test('dashboard shows null couple and vows_progress for new user', function () {
             ->where('vows_progress', null)
         );
 });
+
+test('dashboard inclut app_url et ceremony_date_iso dans les props', function () {
+    $user = User::factory()->create();
+    $couple = Couple::factory()->create([
+        'spouse_1_id'   => $user->id,
+        'ceremony_date' => '2026-09-12',
+    ]);
+    $user->update(['couple_id' => $couple->id]);
+
+    $this->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertInertia(fn ($page) => $page
+            ->component('Dashboard')
+            ->where('app_url', config('app.url'))
+            ->where('couple.ceremony_date_iso', '2026-09-12')
+        );
+});

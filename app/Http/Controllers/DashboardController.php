@@ -34,6 +34,7 @@ class DashboardController extends Controller
                 'spouse1_name'      => $couple->spouse1->name,
                 'spouse2_name'      => $couple->spouse2?->name,
                 'ceremony_date'     => $couple->ceremony_date?->format('d/m/Y'),
+                'ceremony_date_iso' => $couple->ceremony_date?->format('Y-m-d'),
                 'ceremony_location' => $couple->ceremony_location,
             ] : null,
             'vows_progress' => $draft ? [
@@ -43,6 +44,7 @@ class DashboardController extends Controller
             ] : null,
             'partner_vows_readable' => $partnerVowsReadable,
             'partner_name'          => $partnerName,
+            'app_url'               => config('app.url'),
         ]);
     }
 }
