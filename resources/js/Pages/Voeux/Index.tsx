@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { router } from '@inertiajs/react';
 import debounce from 'lodash/debounce';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import ProgressBar from '@/Components/ProgressBar';
+import StepperBar from '@/Components/StepperBar';
 import ToneSelector from '@/Components/ToneSelector';
 import CitationBank from '@/Components/CitationBank';
 
@@ -112,7 +112,12 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
     return (
         <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Mes vœux</h2>}>
             <div className="max-w-2xl mx-auto px-4 py-8">
-                <ProgressBar current={step} total={total} />
+                <StepperBar
+                    questions={questions}
+                    currentStep={step}
+                    answers={localAnswers}
+                    onNavigate={navigateTo}
+                />
 
                 <h2 className="text-2xl font-serif text-stone-800 mt-8 mb-6">
                     {question.label}
