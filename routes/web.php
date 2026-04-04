@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CeremonyController;
 use App\Http\Controllers\CoupleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
@@ -46,6 +47,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/voeux/preview', [VowsController::class, 'preview'])->name('voeux.preview');
     Route::get('/voeux/edit', [VowsController::class, 'edit'])->name('voeux.edit');
     Route::put('/voeux', [VowsController::class, 'update'])->name('voeux.update');
+
+    Route::get('/ceremonie', [CeremonyController::class, 'show'])->name('ceremony.show');
+    Route::post('/ceremonie/blocks', [CeremonyController::class, 'addBlock'])->name('ceremony.blocks.add');
+    Route::put('/ceremonie/blocks', [CeremonyController::class, 'updateBlocks'])->name('ceremony.blocks.update');
+    Route::delete('/ceremonie/blocks/{blockId}', [CeremonyController::class, 'removeBlock'])->name('ceremony.blocks.remove');
+    Route::patch('/ceremonie/blocks/{blockId}/notes', [CeremonyController::class, 'updateBlockNote'])->name('ceremony.blocks.notes');
 });
 
 Route::middleware('auth')->group(function () {
