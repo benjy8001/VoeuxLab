@@ -6,7 +6,9 @@ use App\Http\Requests\StoreVowsAnswerRequest;
 use App\Models\VowsAnswer;
 use App\Models\VowsDraft;
 use App\Services\VowsGeneratorService;
+use App\Services\VowsSuggestionsService;
 use App\Support\VowsQuestions;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -229,5 +231,18 @@ class VowsController extends Controller
             'generated_text' => $partnerDraft->generated_text,
             'partner_name'   => $partnerName,
         ]);
+    }
+
+    public function suggestions(Request $request): JsonResponse
+    {
+        $request->validate([
+            'question_key' => ['required', 'string', Rule::in(VowsQuestions::validKeys())],
+            'tone'         => ['required', 'string', Rule::in(VowsQuestions::validTones())],
+        ]);
+
+        $suggestions = app(VowsSuggestionsService::class)
+            ->get($request->question_key, $request->tone);
+
+        return response()->json(['suggestions' => $suggestions]);
     }
 }
