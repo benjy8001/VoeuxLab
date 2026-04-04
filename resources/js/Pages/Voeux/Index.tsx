@@ -23,6 +23,7 @@ interface Props {
 export default function VoeuxIndex({ draft, questions, answers: initialAnswers }: Props) {
     const [step, setStep] = useState(draft.current_step);
     const [localAnswers, setLocalAnswers] = useState<Record<string, string>>(initialAnswers);
+    const [isDirty, setIsDirty] = useState(false);
     const total = questions.length;
     const question = questions[step - 1];
 
@@ -31,7 +32,12 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
             router.post(
                 route('voeux.answer'),
                 { question_key: key, answer_text: text, current_step: currentStep, final: false },
-                { preserveState: true, preserveScroll: true, replace: true }
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true,
+                    onSuccess: () => setIsDirty(false),
+                }
             );
         }, 2000),
         []
@@ -39,6 +45,7 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
 
     const handleChange = (value: string) => {
         setLocalAnswers((prev) => ({ ...prev, [question.key]: value }));
+        setIsDirty(true);
         autoSave(question.key, value, step);
     };
 
@@ -58,6 +65,22 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
                 preserveState: false,
                 onError: () => setStep(previousStep), // annulation si erreur
             }
+        );
+    };
+
+    const navigateTo = (targetStep: number) => {
+        if (isDirty) {
+            autoSave.flush();
+        }
+        router.post(
+            route('voeux.answer'),
+            {
+                question_key: question.key,
+                answer_text: localAnswers[question.key] ?? '',
+                current_step: targetStep,
+                final: false,
+            },
+            { preserveState: false }
         );
     };
 
