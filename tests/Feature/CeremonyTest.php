@@ -267,3 +267,42 @@ test('un époux peut réordonner et éditer les blocs', function () {
     expect($ceremony->program[0]['id'])->toBe($id2);
     expect($ceremony->program[1]['title'])->toBe('Entrée modifiée');
 });
+
+test('PUT /ceremonie/blocks — les notes_officiant sont préservées lors du réordonnancement', function () {
+    [$spouse1, $spouse2, $ceremony] = coupleWithCeremony();
+
+    $blockId = \Illuminate\Support\Str::uuid()->toString();
+    $ceremony->update([
+        'program' => [
+            ['id' => $blockId, 'type' => 'vows', 'title' => 'Vœux', 'time' => null,
+             'duration_minutes' => null, 'description' => null, 'notes_officiant' => 'note existante'],
+        ],
+    ]);
+
+    // Soumettre le bloc sans le champ notes_officiant
+    $response = $this->actingAs($spouse1)->put(route('ceremony.blocks.update'), [
+        'blocks' => [
+            ['id' => $blockId, 'type' => 'vows', 'title' => 'Vœux', 'time' => null,
+             'duration_minutes' => null, 'description' => null],
+        ],
+    ]);
+
+    $response->assertRedirect();
+    $ceremony->refresh();
+    expect($ceremony->program[0]['notes_officiant'])->toBe('note existante');
+});
+
+test('un tiers ne peut pas supprimer un bloc (403)', function () {
+    [$spouse1, $spouse2, $ceremony] = coupleWithCeremony();
+    $outsider = User::factory()->create();
+
+    $blockId = \Illuminate\Support\Str::uuid()->toString();
+    $ceremony->update([
+        'program' => [
+            ['id' => $blockId, 'type' => 'reading', 'title' => 'Lecture', 'time' => null,
+             'duration_minutes' => null, 'description' => null, 'notes_officiant' => null],
+        ],
+    ]);
+
+    $this->actingAs($outsider)->delete(route('ceremony.blocks.remove', $blockId))->assertStatus(403);
+});

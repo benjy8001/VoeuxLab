@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ceremony;
+use App\Models\Couple;
 use App\Models\OfficiantDraft;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -114,6 +115,14 @@ class CeremonyController extends Controller
         $existingBlocks = collect($ceremony->program ?? [])
             ->keyBy('id');
 
+        // Rejeter les ids soumis qui n'existent pas dans le programme actuel
+        $existingIds  = $existingBlocks->keys();
+        $submittedIds = collect($validated['blocks'])->pluck('id');
+
+        if ($submittedIds->diff($existingIds)->isNotEmpty()) {
+            abort(422, 'Un ou plusieurs identifiants de blocs sont invalides.');
+        }
+
         $newProgram = collect($validated['blocks'])->map(function (array $bloc) use ($existingBlocks) {
             $existing = $existingBlocks->get($bloc['id']);
             return [
@@ -168,6 +177,13 @@ class CeremonyController extends Controller
             'notes_officiant' => ['nullable', 'string', 'max:1000'],
         ]);
 
+        // Vérifier que le bloc existe dans le programme
+        abort_unless(
+            collect($ceremony->program)->contains('id', $blockId),
+            404,
+            'Bloc introuvable.'
+        );
+
         $program = collect($ceremony->program ?? [])
             ->map(function (array $bloc) use ($blockId, $validated) {
                 if ($bloc['id'] === $blockId) {
@@ -205,7 +221,7 @@ class CeremonyController extends Controller
     /**
      * Résout la cérémonie d'un couple, aborte 404 si absente.
      */
-    private function resolveCeremony($couple): Ceremony
+    private function resolveCeremony(Couple $couple): Ceremony
     {
         return $couple->ceremony()->firstOrFail();
     }
