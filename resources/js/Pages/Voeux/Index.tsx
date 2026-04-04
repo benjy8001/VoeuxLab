@@ -24,7 +24,6 @@ interface Props {
 export default function VoeuxIndex({ draft, questions, answers: initialAnswers }: Props) {
     const [step, setStep] = useState(draft.current_step);
     const [localAnswers, setLocalAnswers] = useState<Record<string, string>>(initialAnswers);
-    const [isDirty, setIsDirty] = useState(false);
     const total = questions.length;
     const question = questions[step - 1];
 
@@ -37,7 +36,6 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
                     preserveState: true,
                     preserveScroll: true,
                     replace: true,
-                    onSuccess: () => setIsDirty(false),
                 }
             );
         }, 2000),
@@ -46,7 +44,6 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
 
     const handleChange = (value: string) => {
         setLocalAnswers((prev) => ({ ...prev, [question.key]: value }));
-        setIsDirty(true);
         autoSave(question.key, value, step);
     };
 
