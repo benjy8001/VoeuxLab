@@ -43,7 +43,15 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+use App\Models\Couple;
+use App\Models\User;
+use App\Models\VowsDraft;
+
+function userWithDraft(): User
 {
-    // ..
+    $user = User::factory()->create();
+    $couple = Couple::factory()->create(['spouse_1_id' => $user->id]);
+    $user->update(['couple_id' => $couple->id]);
+    VowsDraft::factory()->create(['user_id' => $user->id, 'couple_id' => $couple->id]);
+    return $user;
 }

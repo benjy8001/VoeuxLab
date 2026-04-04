@@ -6,15 +6,6 @@ use App\Models\VowsAnswer;
 use App\Models\VowsDraft;
 use App\Support\VowsQuestions;
 
-function userWithDraft(): User
-{
-    $user = User::factory()->create();
-    $couple = Couple::factory()->create(['spouse_1_id' => $user->id]);
-    $user->update(['couple_id' => $couple->id]);
-    VowsDraft::factory()->create(['user_id' => $user->id, 'couple_id' => $couple->id]);
-    return $user;
-}
-
 test('user with couple can access vows journey', function () {
     $user = userWithDraft();
 
