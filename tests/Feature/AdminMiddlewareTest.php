@@ -3,9 +3,6 @@
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
-use Tests\TestCase;
-
-uses(TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 /*
  * Enregistre une route admin temporaire avant chaque test.
