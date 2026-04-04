@@ -33,6 +33,15 @@ export default function Authenticated({
                                 >
                                     Dashboard
                                 </NavLink>
+                                {/* Lien admin — visible uniquement pour les administrateurs */}
+                                {user?.role === 'admin' && (
+                                    <NavLink
+                                        href={route('admin.index')}
+                                        active={route().current('admin.*')}
+                                    >
+                                        Admin
+                                    </NavLink>
+                                )}
                             </div>
                         </div>
 
@@ -137,6 +146,15 @@ export default function Authenticated({
                         >
                             Dashboard
                         </ResponsiveNavLink>
+                        {/* Lien admin mobile — visible uniquement pour les administrateurs */}
+                        {user?.role === 'admin' && (
+                            <ResponsiveNavLink
+                                href={route('admin.index')}
+                                active={route().current('admin.*')}
+                            >
+                                Admin
+                            </ResponsiveNavLink>
+                        )}
                     </div>
 
                     <div className="border-t border-gray-200 pb-1 pt-4">
