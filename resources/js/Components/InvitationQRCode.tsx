@@ -6,7 +6,7 @@ interface Props {
 }
 
 export default function InvitationQRCode({ invitationCode, appUrl }: Props) {
-    const joinUrl = `${appUrl}/couple/join?code=${invitationCode}`;
+    const joinUrl = `${appUrl.replace(/\/$/, '')}/couple/join?code=${encodeURIComponent(invitationCode)}`;
 
     return (
         <>
