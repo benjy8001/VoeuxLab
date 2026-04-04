@@ -69,9 +69,7 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
     };
 
     const navigateTo = (targetStep: number) => {
-        if (isDirty) {
-            autoSave.flush();
-        }
+        autoSave.cancel();
         router.post(
             route('voeux.answer'),
             {
