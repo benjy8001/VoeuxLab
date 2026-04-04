@@ -18,7 +18,7 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 // Types des blocs du programme
 interface ProgramBlock {
@@ -335,6 +335,7 @@ function SpouseView({ ceremony }: { ceremony: CeremonyProps }) {
     };
 
     const handleDelete = (blockId: string) => {
+        if (!window.confirm('Supprimer ce bloc définitivement ?')) return;
         router.delete(route('ceremony.blocks.remove', blockId));
     };
 
@@ -404,6 +405,15 @@ function OfficiantBlock({ block }: OfficiantBlockProps) {
             });
         }, 1000);
     }, [block.id]);
+
+    // Cleanup du debounce au démontage du composant
+    useEffect(() => {
+        return () => {
+            if (debounceRef.current) {
+                clearTimeout(debounceRef.current);
+            }
+        };
+    }, []);
 
     return (
         <div className="bg-white border border-stone-200 rounded-xl p-5 space-y-3">
