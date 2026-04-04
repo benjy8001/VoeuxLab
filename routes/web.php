@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CoupleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
@@ -51,6 +52,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// Routes réservées aux administrateurs
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/couples', [AdminController::class, 'couples'])->name('admin.couples');
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::patch('/users/{user}/disable', [AdminController::class, 'disable'])->name('admin.users.disable');
+    Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
 });
 
 require __DIR__.'/auth.php';
