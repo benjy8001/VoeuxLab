@@ -4,8 +4,9 @@ use App\Models\Couple;
 use App\Models\OfficiantDraft;
 use App\Models\User;
 use App\Models\VowsDraft;
+use Tests\TestCase;
 
-uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 // ──────────────────────────────────────────────────
 // Accès non authentifié
