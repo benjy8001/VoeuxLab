@@ -36,6 +36,12 @@ class MakeAdmin extends Command
             return self::FAILURE;
         }
 
+        if ($user->isAdmin()) {
+            $this->warn("L'utilisateur {$user->name} est déjà administrateur.");
+
+            return self::SUCCESS;
+        }
+
         $user->update(['role' => 'admin']);
 
         $this->info("L'utilisateur {$user->name} ({$email}) est maintenant administrateur.");

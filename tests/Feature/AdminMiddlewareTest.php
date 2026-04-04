@@ -32,7 +32,7 @@ test("un utilisateur avec role spouse sur une route admin reçoit 403", function
 });
 
 test("un utilisateur avec role admin sur une route admin reçoit 200", function () {
-    $user = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->admin()->create();
 
     $this->actingAs($user)
         ->get('/test-admin-route')
