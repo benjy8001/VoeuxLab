@@ -35,7 +35,8 @@ class AdminController extends Controller
     {
         $couples = Couple::with(['spouse1', 'spouse2', 'officiant', 'vowsDrafts', 'ceremony'])
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->each(fn ($couple) => $couple->makeHidden('invitation_code'));
 
         return Inertia::render('Admin/Couples', ['couples' => $couples]);
     }
@@ -75,6 +76,6 @@ class AdminController extends Controller
 
         $user->delete();
 
-        return back();
+        return redirect()->route('admin.users');
     }
 }

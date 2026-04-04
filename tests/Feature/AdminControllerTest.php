@@ -8,6 +8,14 @@ use App\Models\VowsDraft;
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 // ──────────────────────────────────────────────────
+// Accès non authentifié
+// ──────────────────────────────────────────────────
+
+test('GET /admin redirige vers login pour un visiteur non authentifié', function () {
+    $this->get('/admin')->assertRedirect('/login');
+});
+
+// ──────────────────────────────────────────────────
 // GET /admin — tableau de bord
 // ──────────────────────────────────────────────────
 
@@ -188,4 +196,24 @@ test('DELETE /admin/users/{user} supprime un autre utilisateur et redirige', fun
         ->assertRedirect();
 
     $this->assertDatabaseMissing('users', ['id' => $spouse->id]);
+});
+
+// ──────────────────────────────────────────────────
+// Middleware admin — accès refusé pour un spouse
+// ──────────────────────────────────────────────────
+
+test('un spouse ne peut pas désactiver un autre utilisateur', function () {
+    $spouse = User::factory()->create();
+    $other = User::factory()->create();
+    $this->actingAs($spouse)
+        ->patch(route('admin.users.disable', $other))
+        ->assertForbidden();
+});
+
+test('un spouse ne peut pas supprimer un autre utilisateur', function () {
+    $spouse = User::factory()->create();
+    $other = User::factory()->create();
+    $this->actingAs($spouse)
+        ->delete(route('admin.users.destroy', $other))
+        ->assertForbidden();
 });
