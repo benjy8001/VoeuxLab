@@ -1,6 +1,8 @@
 import { Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import ProgressBar from '@/Components/ProgressBar';
+import WeddingCountdown from '@/Components/WeddingCountdown';
+import InvitationQRCode from '@/Components/InvitationQRCode';
 
 interface CoupleData {
     invitation_code: string;
@@ -8,6 +10,7 @@ interface CoupleData {
     spouse1_name: string;
     spouse2_name: string | null;
     ceremony_date: string | null;
+    ceremony_date_iso: string | null;
     ceremony_location: string | null;
 }
 
@@ -22,9 +25,10 @@ interface Props {
     vows_progress: VowsProgressData | null;
     partner_vows_readable: boolean;
     partner_name: string | null;
+    app_url: string;
 }
 
-export default function Dashboard({ couple, vows_progress, partner_vows_readable, partner_name }: Props) {
+export default function Dashboard({ couple, vows_progress, partner_vows_readable, partner_name, app_url }: Props) {
     return (
         <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Tableau de bord</h2>}>
             <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
@@ -64,15 +68,19 @@ export default function Dashboard({ couple, vows_progress, partner_vows_readable
                         {couple.ceremony_date && (
                             <p className="text-stone-500 text-sm mt-1">📅 {couple.ceremony_date}</p>
                         )}
+                        {couple.ceremony_date_iso && (
+                            <WeddingCountdown ceremonyDate={couple.ceremony_date_iso} />
+                        )}
                         {couple.ceremony_location && (
                             <p className="text-stone-500 text-sm mt-0.5">📍 {couple.ceremony_location}</p>
                         )}
                         {!couple.is_full && (
                             <div className="mt-4 bg-stone-50 rounded-lg p-3">
                                 <p className="text-xs text-stone-500 mb-1">Code d'invitation à partager</p>
-                                <p className="font-mono text-xl tracking-widest text-amber-700 font-bold">
-                                    {couple.invitation_code}
-                                </p>
+                                <InvitationQRCode
+                                    invitationCode={couple.invitation_code}
+                                    appUrl={app_url}
+                                />
                             </div>
                         )}
                     </div>
