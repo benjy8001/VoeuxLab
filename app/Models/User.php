@@ -41,4 +41,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(VowsDraft::class);
     }
+
+    /** Vérifie si l'utilisateur est administrateur. */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }

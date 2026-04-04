@@ -32,7 +32,8 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                // Expose uniquement les champs nécessaires au frontend, dont le rôle pour l'accès admin
+                'user' => $request->user()?->only(['id', 'name', 'email', 'role']),
             ],
         ];
     }

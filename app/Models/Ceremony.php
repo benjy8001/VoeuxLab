@@ -10,6 +10,7 @@ class Ceremony extends Model
 {
     use HasFactory;
 
+    // notes_officiant = notes globales de préparation de l'officiant (≠ notes par bloc stockées dans program[].notes_officiant)
     protected $fillable = ['couple_id', 'program', 'notes_officiant', 'status'];
 
     protected $casts = ['program' => 'array'];

@@ -124,6 +124,22 @@ export default function Dashboard({ couple, vows_progress, partner_vows_readable
                         )}
                     </div>
                 )}
+                {/* Card Programme de cérémonie */}
+                {couple && (
+                    <div className="bg-white border border-stone-200 rounded-xl p-6">
+                        <h2 className="text-lg font-semibold text-stone-700 mb-3">Programme de cérémonie</h2>
+                        <p className="text-stone-500 text-sm mb-4">
+                            Consultez et organisez le déroulé de votre cérémonie.
+                        </p>
+                        <Link
+                            href={route('ceremony.show')}
+                            className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm"
+                        >
+                            Consulter le programme
+                        </Link>
+                    </div>
+                )}
+
                 {/* Lien mode officiant·e */}
                 <div className="text-center pt-4 border-t border-stone-100">
                     <Link href={route('officiant.create')} className="text-xs text-stone-400 hover:text-amber-600 transition-colors">

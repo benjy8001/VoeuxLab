@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CeremonyController;
 use App\Http\Controllers\CoupleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
@@ -45,12 +47,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/voeux/preview', [VowsController::class, 'preview'])->name('voeux.preview');
     Route::get('/voeux/edit', [VowsController::class, 'edit'])->name('voeux.edit');
     Route::put('/voeux', [VowsController::class, 'update'])->name('voeux.update');
+
+    Route::get('/ceremonie', [CeremonyController::class, 'show'])->name('ceremony.show');
+    Route::post('/ceremonie/blocks', [CeremonyController::class, 'addBlock'])->name('ceremony.blocks.add');
+    Route::put('/ceremonie/blocks', [CeremonyController::class, 'updateBlocks'])->name('ceremony.blocks.update');
+    Route::delete('/ceremonie/blocks/{blockId}', [CeremonyController::class, 'removeBlock'])->name('ceremony.blocks.remove');
+    Route::patch('/ceremonie/blocks/{blockId}/notes', [CeremonyController::class, 'updateBlockNote'])->name('ceremony.blocks.notes');
 });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// Routes réservées aux administrateurs
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/couples', [AdminController::class, 'couples'])->name('admin.couples');
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::patch('/users/{user}/disable', [AdminController::class, 'disable'])->name('admin.users.disable');
+    Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
 });
 
 require __DIR__.'/auth.php';

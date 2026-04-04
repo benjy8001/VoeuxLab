@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\JoinCoupleRequest;
+use App\Models\Ceremony;
 use App\Models\Couple;
 use App\Models\VowsDraft;
 use Illuminate\Http\RedirectResponse;
@@ -37,6 +38,13 @@ class CoupleController extends Controller
         VowsDraft::create([
             'user_id' => $request->user()->id,
             'couple_id' => $couple->id,
+        ]);
+
+        // Créer automatiquement la cérémonie lors de la formation du couple
+        Ceremony::create([
+            'couple_id' => $couple->id,
+            'program'   => [],
+            'status'    => 'draft',
         ]);
 
         return redirect()->route('couple.show');
