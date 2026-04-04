@@ -57,3 +57,25 @@ test('joining a full couple is rejected', function () {
 test('unauthenticated user cannot create couple', function () {
     $this->post(route('couple.store'))->assertRedirect(route('login'));
 });
+
+test('join page pré-remplit le code depuis le paramètre URL', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->get(route('couple.join', ['code' => 'ABCD1234']))
+        ->assertInertia(fn ($page) => $page
+            ->component('Couple/Join')
+            ->where('initial_code', 'ABCD1234')
+        );
+});
+
+test('join page initial_code est null si pas de paramètre code', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->get(route('couple.join'))
+        ->assertInertia(fn ($page) => $page
+            ->component('Couple/Join')
+            ->where('initial_code', null)
+        );
+});

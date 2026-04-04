@@ -50,9 +50,11 @@ class CoupleController extends Controller
         return redirect()->route('couple.show');
     }
 
-    public function join(): Response
+    public function join(Request $request): Response
     {
-        return Inertia::render('Couple/Join');
+        return Inertia::render('Couple/Join', [
+            'initial_code' => $request->query('code'),
+        ]);
     }
 
     public function attach(JoinCoupleRequest $request): RedirectResponse

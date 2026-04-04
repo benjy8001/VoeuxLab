@@ -2,9 +2,13 @@ import { useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
-export default function CoupleJoin() {
+interface Props {
+    initial_code?: string | null;
+}
+
+export default function CoupleJoin({ initial_code }: Props) {
     const { data, setData, post, processing, errors } = useForm({
-        invitation_code: '',
+        invitation_code: initial_code ?? '',
     });
 
     return (
@@ -32,7 +36,9 @@ export default function CoupleJoin() {
                         maxLength={8}
                         className="w-full text-center text-2xl tracking-widest border border-stone-300 rounded-lg p-4 mb-4 uppercase"
                     />
-                    {errors.invitation_code && <p className="text-red-500 text-sm mb-4">{errors.invitation_code}</p>}
+                    {errors.invitation_code && (
+                        <p className="text-red-500 text-sm mb-4">{errors.invitation_code}</p>
+                    )}
                     <button
                         type="submit"
                         disabled={processing}
