@@ -22,7 +22,7 @@ class CeremonyController extends Controller
      */
     public function show(Request $request): Response|RedirectResponse
     {
-        $couple = $request->user()->couple()->first();
+        $couple = $request->user()->couple()->with(['spouse1', 'spouse2'])->first();
 
         if (! $couple) {
             // Chercher si l'user est officiant d'un couple
@@ -30,7 +30,7 @@ class CeremonyController extends Controller
             if (! $officiantDraft) {
                 return redirect()->route('dashboard');
             }
-            $couple = $officiantDraft->couple;
+            $couple = $officiantDraft->couple()->with(['spouse1', 'spouse2'])->first();
         }
 
         $ceremony = $couple->ceremony()->first();
