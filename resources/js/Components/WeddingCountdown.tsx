@@ -12,7 +12,7 @@ interface TimeLeft {
 }
 
 function calculateTimeLeft(ceremonyDate: string): TimeLeft | null {
-    const diff = new Date(ceremonyDate).getTime() - Date.now();
+    const diff = new Date(`${ceremonyDate}T00:00:00`).getTime() - Date.now();
 
     if (diff <= 0) return null;
 
