@@ -5,6 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StepperBar from '@/Components/StepperBar';
 import ToneSelector from '@/Components/ToneSelector';
 import CitationBank from '@/Components/CitationBank';
+import SuggestionsPanel from '@/Components/SuggestionsPanel';
 
 interface Question {
     key: string;
@@ -128,6 +129,14 @@ export default function VoeuxIndex({ draft, questions, answers: initialAnswers }
                     rows={8}
                     className="w-full p-4 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none resize-none text-stone-700"
                 />
+
+                <div className="mt-3">
+                    <SuggestionsPanel
+                        questionKey={question.key}
+                        tone={draft.tone ?? 'balanced'}
+                        onInsert={handleCitationInsert}
+                    />
+                </div>
 
                 {question.hint && (
                     <p className="text-sm text-stone-400 mt-2 italic">{question.hint}</p>
