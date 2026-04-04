@@ -42,8 +42,9 @@ export default function AdminUsers({ users }: Props) {
     const { auth } = usePage<PageProps>().props;
     const currentUserId = auth.user?.id;
 
-    // Désactiver un utilisateur
+    // Désactiver un utilisateur avec confirmation
     function handleDisable(userId: number) {
+        if (!confirm('Désactiver cet utilisateur ? Il perdra accès à ses fonctionnalités.')) return;
         router.patch(route('admin.users.disable', userId));
     }
 

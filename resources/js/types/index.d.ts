@@ -3,7 +3,7 @@ export interface User {
     name: string;
     email: string;
     email_verified_at?: string;
-    role: 'spouse' | 'admin';
+    role: 'spouse' | 'admin' | 'disabled';
 }
 
 export type PageProps<
