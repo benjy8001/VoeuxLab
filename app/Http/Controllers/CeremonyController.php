@@ -205,7 +205,7 @@ class CeremonyController extends Controller
      * Résout le couple de l'utilisateur courant.
      * Supporte à la fois les époux et les officiants.
      */
-    private function resolveCouple(Request $request)
+    private function resolveCouple(Request $request): Couple
     {
         $couple = $request->user()->couple()->first();
 

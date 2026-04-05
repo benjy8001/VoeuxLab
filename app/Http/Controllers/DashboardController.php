@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\VowsDraft;
 use App\Support\VowsQuestions;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,17 +13,16 @@ class DashboardController extends Controller
     {
         $user   = $request->user();
         $couple = $user->couple?->load(['spouse1', 'spouse2']);
-        $draft  = $couple
-            ? VowsDraft::where('user_id', $user->id)->where('couple_id', $couple->id)->first()
-            : null;
+        $draft  = $couple ? $user->vowsDraft : null;
 
         $partnerVowsReadable = false;
         $partnerName = null;
         if ($couple && $draft) {
             $partnerVowsReadable = $draft->isReadableByPartner($couple);
-            $partnerName = $couple->spouse_1_id === $user->id
-                ? $couple->spouse2?->name
-                : $couple->spouse1?->name;
+            $partner = $couple->spouse_1_id === $user->id
+                ? $couple->spouse2
+                : $couple->spouse1;
+            $partnerName = $partner?->name;
         }
 
         return Inertia::render('Dashboard', [

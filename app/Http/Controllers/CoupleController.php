@@ -20,7 +20,9 @@ class CoupleController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        abort_if($request->user()->couple_id !== null, 403, 'Vous appartenez déjà à un couple.');
+        $user = $request->user();
+
+        abort_if($user->couple_id !== null, 403, 'Vous appartenez déjà à un couple.');
 
         $request->validate([
             'ceremony_date' => ['nullable', 'date', 'after:today'],
@@ -28,15 +30,15 @@ class CoupleController extends Controller
         ]);
 
         $couple = Couple::create([
-            'spouse_1_id' => $request->user()->id,
+            'spouse_1_id' => $user->id,
             'ceremony_date' => $request->ceremony_date,
             'ceremony_location' => $request->ceremony_location,
         ]);
 
-        $request->user()->update(['couple_id' => $couple->id]);
+        $user->update(['couple_id' => $couple->id]);
 
         VowsDraft::create([
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
             'couple_id' => $couple->id,
         ]);
 
