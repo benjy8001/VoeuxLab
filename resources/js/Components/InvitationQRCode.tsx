@@ -1,4 +1,4 @@
-import QRCode from 'react-qr-code';
+import { QRCode } from 'react-qr-code';
 
 interface Props {
     invitationCode: string;
@@ -13,8 +13,7 @@ export default function InvitationQRCode({ invitationCode, appUrl }: Props) {
             <div className="flex justify-center my-3">
                 <QRCode
                     value={joinUrl}
-                    size={160}
-                    style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
+                    size={64}
                     viewBox="0 0 256 256"
                 />
             </div>
