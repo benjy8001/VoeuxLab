@@ -105,6 +105,8 @@ class VowsController extends Controller
             // La condition est symétrique : si je peux lire les vœux du partenaire,
             // le partenaire peut aussi lire les miens.
             'partner_vows_readable'  => $draft->isReadableByPartner($couple),
+            'questions'              => VowsQuestions::forTone($draft->tone ?? 'balanced'),
+            'answers'                => $draft->answers->pluck('answer_text', 'question_key'),
         ]);
     }
 

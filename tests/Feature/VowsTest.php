@@ -57,6 +57,28 @@ test('saving with final=true redirects to preview', function () {
         ->assertRedirect(route('voeux.preview'));
 });
 
+test('preview passes questions and answers to inertia', function () {
+    $user = userWithDraft();
+    $draft = VowsDraft::where('user_id', $user->id)->first();
+
+    VowsAnswer::factory()->create([
+        'vows_draft_id' => $draft->id,
+        'question_key'  => 'meeting_story',
+        'answer_text'   => 'Nous nous sommes rencontrés à Paris.',
+        'step_order'    => 1,
+    ]);
+
+    $draft->update(['generated_text' => 'Vœux générés.', 'status' => 'completed']);
+
+    $this->actingAs($user)
+        ->get(route('voeux.preview'))
+        ->assertInertia(fn ($page) => $page
+            ->component('Voeux/Preview')
+            ->has('questions', VowsQuestions::count())
+            ->has('answers.meeting_story')
+        );
+});
+
 test('user cannot save answers for another user draft', function () {
     $owner = userWithDraft();
     $ownerDraft = VowsDraft::where('user_id', $owner->id)->first();
