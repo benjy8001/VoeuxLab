@@ -79,6 +79,25 @@ test('preview passes questions and answers to inertia', function () {
         );
 });
 
+test('export vows pdf returns a download with answers', function () {
+    $user = userWithDraft();
+    $draft = VowsDraft::where('user_id', $user->id)->first();
+
+    VowsAnswer::factory()->create([
+        'vows_draft_id' => $draft->id,
+        'question_key'  => 'meeting_story',
+        'answer_text'   => 'Nous nous sommes rencontrés.',
+        'step_order'    => 1,
+    ]);
+
+    $draft->update(['generated_text' => 'Vœux.', 'status' => 'completed']);
+
+    $this->actingAs($user)
+        ->get(route('voeux.export'))
+        ->assertStatus(200)
+        ->assertHeader('content-type', 'application/pdf');
+});
+
 test('user cannot save answers for another user draft', function () {
     $owner = userWithDraft();
     $ownerDraft = VowsDraft::where('user_id', $owner->id)->first();
