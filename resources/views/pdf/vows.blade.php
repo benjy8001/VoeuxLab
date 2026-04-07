@@ -57,6 +57,38 @@
             border-top: 1px solid #e8d9c0;
             padding-top: 0.4cm;
         }
+
+        .qa-section {
+            margin-top: 1.5cm;
+            padding-top: 1cm;
+            border-top: 1px solid #e8d9c0;
+        }
+
+        .qa-title {
+            font-family: 'DejaVu Serif', serif;
+            font-size: 16pt;
+            font-weight: normal;
+            color: #7c6343;
+            margin-bottom: 0.8cm;
+        }
+
+        .qa-item {
+            margin-bottom: 0.6cm;
+        }
+
+        .qa-question {
+            font-style: italic;
+            color: #b09878;
+            font-size: 10pt;
+            margin-bottom: 0.1cm;
+        }
+
+        .qa-answer {
+            color: #3d3530;
+            font-size: 11pt;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +99,20 @@
         </div>
 
         <div class="content">{{ $draft->generated_text }}</div>
+
+        @if(count(array_filter($questions, fn($q) => $answers->has($q['key']))) > 0)
+        <div class="qa-section">
+            <div class="qa-title">Mes réponses</div>
+            @foreach($questions as $q)
+                @if($answers->has($q['key']))
+                    <div class="qa-item">
+                        <p class="qa-question">{{ $q['label'] }}</p>
+                        <p class="qa-answer">{{ $answers->get($q['key']) }}</p>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+        @endif
     </div>
 
     <div class="footer">
