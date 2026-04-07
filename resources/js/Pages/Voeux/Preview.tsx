@@ -11,9 +11,11 @@ interface Props {
     has_shared: boolean;
     partner_has_shared: boolean;
     partner_vows_readable: boolean;
+    questions: { key: string; label: string; order: number }[];
+    answers: Record<string, string>;
 }
 
-export default function VoeuxPreview({ draft, partner_name, has_shared, partner_has_shared, partner_vows_readable }: Props) {
+export default function VoeuxPreview({ draft, partner_name, has_shared, partner_has_shared, partner_vows_readable, questions, answers }: Props) {
     const [text, setText] = useState(draft.generated_text ?? '');
 
     const handleReorder = (newText: string) => {
@@ -46,6 +48,24 @@ export default function VoeuxPreview({ draft, partner_name, has_shared, partner_
 
                 <ReadingTimer text={text} />
                 <VowsInsights text={text} partnerName={partner_name} />
+
+                {/* Section Q&R */}
+                {questions.filter(q => answers[q.key]).length > 0 && (
+                    <div className="mt-10 border-t border-stone-200 pt-8">
+                        <h3 className="text-lg font-serif text-stone-700 mb-6">Mes réponses</h3>
+                        <div className="space-y-6">
+                            {questions
+                                .filter(q => answers[q.key])
+                                .map(q => (
+                                    <div key={q.key}>
+                                        <p className="text-sm italic text-stone-400 mb-1">{q.label}</p>
+                                        <p className="text-stone-700">{answers[q.key]}</p>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                )}
 
                 {/* Bloc partage */}
                 <div className="mt-8 border border-stone-200 rounded-xl p-5 bg-stone-50">
